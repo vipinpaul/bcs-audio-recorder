@@ -59,7 +59,8 @@ jobs:
 
       - name: Check the audio-recorder Dirs
         run: cd audio-recorder && ls && cd ../
-
+      - name: check again dir 1
+        run: ls && echo `${{ env.PACKAGE_VERSION }} new ${PACKAGE_VERSION}`
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
