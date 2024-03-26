@@ -28,6 +28,9 @@ jobs:
         
       - name: Read Version from package.json
         run: echo "PACKAGE_VERSION=$(jq -r '.version' package.json)" >> $GITHUB_ENV
+
+      - name: check
+        run: echo `package $PACKAGE_VERSION`
       
       - name: Package extension
         run: npm install -g @vscode/vsce && vsce package
@@ -68,7 +71,7 @@ jobs:
           draft: false
           prerelease: false
       - name: check again dir
-        run: ls
+        run: ls && echo `${{ env.PACKAGE_VERSION }} new ${PACKAGE_VERSION}`
       - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
