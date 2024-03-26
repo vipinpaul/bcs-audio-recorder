@@ -45,6 +45,9 @@ jobs:
           name: audio-recorder
           path: ./audio-recorder
 
+      - name: Check the Dirs
+        run: ls
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -53,8 +56,8 @@ jobs:
         with:
           tag_name: v${{ github.run_number }}
           release_name: Release ${{ github.run_number }}
-          draft: false
-          prerelease: false
+          draft: true
+          prerelease: true
 
       - name: Upload Release Asset
         id: upload-release-asset
