@@ -30,7 +30,7 @@ jobs:
         run: echo "PACKAGE_VERSION=$(jq -r '.version' package.json)" >> $GITHUB_ENV
 
       - name: check
-        run: echo `package $PACKAGE_VERSION`
+        run: echo "The package version is ${{ env.PACKAGE_VERSION }}"
       
       - name: Package extension
         run: npm install -g @vscode/vsce && vsce package
@@ -57,10 +57,19 @@ jobs:
       - name: Check the Dirs
         run: ls
 
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install jq -y
+        
+      - name: Read Version from package.json
+        run: echo "PACKAGE_VERSION=$(jq -r '.version' package.json)" >> $GITHUB_ENV
+
+      - name: check
+        run: echo "The package version is ${{ env.PACKAGE_VERSION }}"
+
       - name: Check the audio-recorder Dirs
         run: cd audio-recorder && ls && cd ../
       - name: check again dir 1
-        run: ls && echo `${{ env.PACKAGE_VERSION }} new ${PACKAGE_VERSION}`
+        run: ls && echo "${{ env.PACKAGE_VERSION }}  - new ${PACKAGE_VERSION}"
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
