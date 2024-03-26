@@ -2,7 +2,7 @@ name: Scribe Audio Recorder
 
 on:
   push:
-    branches: [master, ft/ci-cd]
+    branches: [master]
 
 jobs:
   build:
@@ -22,7 +22,7 @@ jobs:
 
       - name: Build UI
         run: cd src/webview/ui && yarn install && yarn run build:all && cd ../../..
-
+      
       - name: Package extension
         run: npm install -g @vscode/vsce && vsce package
 
@@ -45,17 +45,23 @@ jobs:
           name: audio-recorder
           path: ./audio-recorder
 
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install jq -y
+        
+      - name: Read Version from package.json
+        run: echo "PACKAGE_VERSION=$(jq -r '.version' package.json)" >> $GITHUB_ENV
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.SECRET_TOKEN }}
         with:
-          tag_name: v${{ github.run_number }}
-          release_name: Release ${{ github.run_number }}
+          tag_name: v${{ env.PACKAGE_VERSION }}
+          release_name: Scribe-audio-recorder ${{ env.PACKAGE_VERSION }}
           draft: false
           prerelease: false
-
+      
       - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
@@ -63,6 +69,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.SECRET_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./audio-recorder/audio-recorder/*.vsix
-          asset_name: audio-recorder-${{ github.run_number }}.vsix
+          asset_path: ./audio-recorder/scribe-audio-${{ env.PACKAGE_VERSION }}.vsix
+          asset_name: scribe-audio-recorder-${{ env.PACKAGE_VERSION }}.vsix
           asset_content_type: application/zip
